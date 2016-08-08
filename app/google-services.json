@@ -1,0 +1,42 @@
+{
+  "project_info": {
+    "project_number": "549521504567",
+    "firebase_url": "https://imediator-8d181.firebaseio.com",
+    "project_id": "imediator-8d181",
+    "storage_bucket": "imediator-8d181.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:549521504567:android:d46f0fcdf61b0686",
+        "android_client_info": {
+          "package_name": "com.imediator.imediator"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "549521504567-h400namjlhhmmtm7qrt5lbcvoha571kr.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyBmZ4frg1pqW_9IG2f9FLYKbUGP76yS3Ss"
+        }
+      ],
+      "services": {
+        "analytics_service": {
+          "status": 1
+        },
+        "appinvite_service": {
+          "status": 1,
+          "other_platform_oauth_client": []
+        },
+        "ads_service": {
+          "status": 2
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
