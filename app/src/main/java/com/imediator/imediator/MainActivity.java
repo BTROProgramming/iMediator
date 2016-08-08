@@ -1,20 +1,44 @@
 package com.imediator.imediator;
 
+import android.*;
+import android.Manifest;
 import android.app.Activity;
+import android.content.BroadcastReceiver;
+import android.content.Context;
 import android.content.Intent;
+import android.content.IntentFilter;
+import android.content.pm.PackageManager;
+import android.location.Geocoder;
+import android.location.Location;
+import android.location.LocationListener;
+import android.location.LocationManager;
 import android.net.Uri;
 import android.os.Bundle;
+import android.support.v4.app.ActivityCompat;
+import android.support.v4.content.ContextCompat;
+import android.support.v4.content.LocalBroadcastManager;
+import android.util.Log;
 import android.view.KeyEvent;
+import android.view.View;
 import android.view.Window;
 import android.webkit.WebSettings;
 import android.webkit.WebView;
 import android.webkit.WebViewClient;
+import android.widget.Toast;
 
 import com.google.android.gms.appindexing.Action;
 import com.google.android.gms.appindexing.AppIndex;
+import com.google.android.gms.common.ConnectionResult;
+import com.google.android.gms.common.GooglePlayServicesUtil;
 import com.google.android.gms.common.api.GoogleApiClient;
+import com.google.android.gms.identity.intents.Address;
+
+import java.io.IOException;
+import java.util.List;
+import java.util.Locale;
 
 public class MainActivity extends Activity {
+    private BroadcastReceiver mRegistrationBroadcastReceiver;
     private WebView mWebView;
     /**
      * ATTENTION: This was auto-generated to implement the App Indexing API.
@@ -22,9 +46,38 @@ public class MainActivity extends Activity {
      */
     private GoogleApiClient client;
 
+
+
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+        mRegistrationBroadcastReceiver = new BroadcastReceiver() {
+            @Override
+            public void onReceive(Context context, Intent intent) {
+                if (intent.getAction() == GCMRegistrationIntentService.REGISTRATION_SUCCESS){
+                    String token = intent.getStringExtra("token");
+                    Toast.makeText(getApplicationContext(), "Token: "+token, Toast.LENGTH_LONG).show();
+                }else if(intent.getAction() == GCMRegistrationIntentService.REGISTRATION_ERROR){
+                    Toast.makeText(getApplicationContext(), "GCM Registration Error", Toast.LENGTH_LONG).show();
+                }else{
+                    //tobe define
+                }
+            }
+        };
+
+        int resultCode = GooglePlayServicesUtil.isGooglePlayServicesAvailable(getApplicationContext());
+        if (ConnectionResult.SUCCESS != resultCode){
+            if (GooglePlayServicesUtil.isUserRecoverableError(resultCode)){
+                Toast.makeText(getApplicationContext(), "Google Play Service is not installed/enabled!", Toast.LENGTH_LONG).show();
+                GooglePlayServicesUtil.showErrorNotification(resultCode, getApplicationContext());
+
+            }else{
+                Toast.makeText(getApplicationContext(), "This device does not support Google Play Services", Toast.LENGTH_LONG).show();
+            }
+        }else{
+            Intent intnt = new Intent(this, GCMRegistrationIntentService.class);
+            startService(intnt);
+        }
         getWindow().requestFeature(Window.FEATURE_NO_TITLE);
         mWebView = new WebView(this);
         mWebView.loadUrl("http://imediatore.ro/");
@@ -83,6 +136,8 @@ public class MainActivity extends Activity {
         AppIndex.AppIndexApi.start(client, viewAction);
     }
 
+
+
     @Override
     public void onStop() {
         super.onStop();
@@ -102,4 +157,22 @@ public class MainActivity extends Activity {
         AppIndex.AppIndexApi.end(client, viewAction);
         client.disconnect();
     }
+
+    @Override
+    protected void onResume() {
+        super.onResume();
+        LocalBroadcastManager.getInstance(this).registerReceiver(mRegistrationBroadcastReceiver,
+                new IntentFilter(GCMRegistrationIntentService.REGISTRATION_SUCCESS));
+        LocalBroadcastManager.getInstance(this).registerReceiver(mRegistrationBroadcastReceiver,
+                new IntentFilter(GCMRegistrationIntentService.REGISTRATION_ERROR));
+    }
+
+    @Override
+    protected void onPause() {
+        super.onPause();
+        LocalBroadcastManager.getInstance(this).unregisterReceiver(mRegistrationBroadcastReceiver);
+    }
 }
+
+
+
