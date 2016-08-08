@@ -56,7 +56,6 @@ public class MainActivity extends Activity {
             public void onReceive(Context context, Intent intent) {
                 if (intent.getAction() == GCMRegistrationIntentService.REGISTRATION_SUCCESS){
                     String token = intent.getStringExtra("token");
-                    Toast.makeText(getApplicationContext(), "Token: "+token, Toast.LENGTH_LONG).show();
                 }else if(intent.getAction() == GCMRegistrationIntentService.REGISTRATION_ERROR){
                     Toast.makeText(getApplicationContext(), "GCM Registration Error", Toast.LENGTH_LONG).show();
                 }else{
@@ -83,6 +82,7 @@ public class MainActivity extends Activity {
         mWebView.loadUrl("http://imediatore.ro/");
         WebSettings webSettings = mWebView.getSettings();
         webSettings.setJavaScriptEnabled(true);
+        mWebView.getSettings().setGeolocationEnabled(true);
         mWebView.setWebViewClient(new WebViewClient() {
             @Override
             public boolean shouldOverrideUrlLoading(WebView view, String url) {
