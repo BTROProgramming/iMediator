@@ -21,10 +21,12 @@ import android.util.Log;
 import android.view.KeyEvent;
 import android.view.View;
 import android.view.Window;
+import android.webkit.GeolocationPermissions;
 import android.webkit.WebSettings;
 import android.webkit.WebView;
 import android.webkit.WebViewClient;
 import android.widget.Toast;
+import android.webkit.WebChromeClient;
 
 import com.google.android.gms.appindexing.Action;
 import com.google.android.gms.appindexing.AppIndex;
@@ -37,16 +39,16 @@ import java.io.IOException;
 import java.util.List;
 import java.util.Locale;
 
-public class MainActivity extends Activity {
+public class MainActivity extends Activity implements GeolocationPermissions.Callback{
     private BroadcastReceiver mRegistrationBroadcastReceiver;
     private WebView mWebView;
-    /**
-     * ATTENTION: This was auto-generated to implement the App Indexing API.
-     * See https://g.co/AppIndexing/AndroidStudio for more information.
-     */
+    WebView webview;
+    String geoWebsiteURL = "http://imediatore.ro";
     private GoogleApiClient client;
 
+public MainActivity(){
 
+    }
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
@@ -75,6 +77,7 @@ public class MainActivity extends Activity {
             }
         }else{
             Intent intnt = new Intent(this, GCMRegistrationIntentService.class);
+
             startService(intnt);
         }
         getWindow().requestFeature(Window.FEATURE_NO_TITLE);
@@ -171,6 +174,11 @@ public class MainActivity extends Activity {
     protected void onPause() {
         super.onPause();
         LocalBroadcastManager.getInstance(this).unregisterReceiver(mRegistrationBroadcastReceiver);
+    }
+
+    @Override
+    public void invoke(String s, boolean b, boolean b1) {
+
     }
 }
 

@@ -34,7 +34,7 @@ public class GCMRegistrationIntentService extends IntentService {
                     GoogleCloudMessaging.INSTANCE_ID_SCOPE, null);
             registrationComplete = new Intent(REGISTRATION_SUCCESS);
             registrationComplete.putExtra("token", token);
-
+            Log.v("GCMRegIntentService", "token: "+token);
         }catch(Exception e){
             Log.v("GCMRegIntentService", "Registration Error");
             registrationComplete = new Intent(REGISTRATION_ERROR);
